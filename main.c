@@ -10,8 +10,8 @@
 
 #include "iopcdefine.h"
 //#include "iopccfg.h"
-#include "iopcops_cfg_bdb.h"
-#include "iopcops_cfg_bdb_platform.h"
+#include "iopcops_cfg.h"
+#include "iopcops_cfg_platform.h"
 #include "iopcops_mq.h"
 #include "iopcops_misc.h"
 
@@ -78,15 +78,15 @@ static int setup_zram_swap(uint8_t* disksize)
     uint8_t cmd_str[STR_LEN];
     memset(cmd_str, 0, STR_LEN);
     sprintf(cmd_str, "echo %s > /sys/block/zram0/disksize", disksize);
-    GET_INSTANCE(ops_misc)->execute_cmd(cmd_str, NULL);
+    GET_INSTANCE_MISC_OBJ()->execute_cmd(cmd_str, NULL);
 
     memset(cmd_str, 0, STR_LEN);
     sprintf(cmd_str, "mkswap /dev/zram0");
-    GET_INSTANCE(ops_misc)->execute_cmd(cmd_str, NULL);
+    GET_INSTANCE_MISC_OBJ()->execute_cmd(cmd_str, NULL);
 
     memset(cmd_str, 0, STR_LEN);
     sprintf(cmd_str, "swapon /dev/zram0");
-    GET_INSTANCE(ops_misc)->execute_cmd(cmd_str, NULL);
+    GET_INSTANCE_MISC_OBJ()->execute_cmd(cmd_str, NULL);
 
     return 0;
 }
@@ -110,19 +110,19 @@ static void sysinit()
     putenv((char *) "USER=homeroot"); 
     setsid();
 
-    GET_INSTANCE(ops_cfg_bdb_platform)->loadall();
+    GET_INSTANCE_CFG_PLATFORM()->loadall();
 
-    is_init_zram_swap = GET_INSTANCE(ops_cfg_bdb_platform)->is_init_zram_swap(platform_idx);
+    is_init_zram_swap = GET_INSTANCE_CFG_PLATFORM()->is_init_zram_swap(platform_idx);
     memset(zram_disksize, 0, STR_LEN);
-    str_len = GET_INSTANCE(ops_cfg_bdb_platform)->get_zram_disksize(platform_idx, &zram_disksize[0]);
+    str_len = GET_INSTANCE_CFG_PLATFORM()->get_zram_disksize(platform_idx, &zram_disksize[0]);
 
-    is_init_console = GET_INSTANCE(ops_cfg_bdb_platform)->is_init_console(platform_idx);
+    is_init_console = GET_INSTANCE_CFG_PLATFORM()->is_init_console(platform_idx);
     memset(platform_name, 0, STR_LEN);
-    str_len = GET_INSTANCE(ops_cfg_bdb_platform)->get_platform_name(platform_idx, &platform_name[0]);
-    is_host = GET_INSTANCE(ops_cfg_bdb_platform)->is_host(platform_idx);
+    str_len = GET_INSTANCE_CFG_PLATFORM()->get_platform_name(platform_idx, &platform_name[0]);
+    is_host = GET_INSTANCE_CFG_PLATFORM()->is_host(platform_idx);
 
     memset(tty_name, 0, STR_LEN);
-    str_len = GET_INSTANCE(ops_cfg_bdb_platform)->get_tty_name(platform_idx, &tty_name[0]);
+    str_len = GET_INSTANCE_CFG_PLATFORM()->get_tty_name(platform_idx, &tty_name[0]);
 
     if(0)
         printf("str_len %d\n", str_len);
@@ -133,7 +133,7 @@ static void sysinit()
     printf("Platform {%s} is running in [%s] mode\n", platform_name, is_host?"host":"guest");
     printf("[%d]tty: %s\n", is_init_console, tty_name);
 
-    GET_INSTANCE(ops_misc)->create_system_by_list(list_size, &init_list[0]);
+    GET_INSTANCE_MISC_OBJ()->create_system_by_list(list_size, &init_list[0]);
 
     if(is_init_zram_swap) {
         setup_zram_swap(zram_disksize);
@@ -161,8 +161,8 @@ static void callback_task(void* dl_handle, void* task_id, get_name_fn_t get_name
 static void plugin_fixed_tasks()
 {
     printf("Plugin tasks...\n");
-    GET_INSTANCE(ops_misc)->plugin_new_task(IOPC_LIBS_PATH(libiopctaskshell.so), callback_task);
-    GET_INSTANCE(ops_misc)->plugin_new_task(IOPC_LIBS_PATH(libiopctasktimer.so), callback_task);
+    GET_INSTANCE_MISC_OBJ()->plugin_new_task(IOPC_LIBS_PATH(libiopctaskshell.so), callback_task);
+    GET_INSTANCE_MISC_OBJ()->plugin_new_task(IOPC_LIBS_PATH(libiopctasktimer.so), callback_task);
 //    GET_INSTANCE(ops_misc)->plugin_new_task(IOPC_LIBS_PATH(libiopctaskhttp.so), callback_task);
 }
 
@@ -175,7 +175,7 @@ static void callback_cmd(void* dl_handle, uint8_t group, uint8_t cmd, cmd_filter
 }
 
 #define SYS_CMD(fn_no, cmd_no, name) \
-	GET_INSTANCE(ops_misc)->plugin_new_cmd(IOPC_LIBS_PATH(libiopccmd_system.so), callback_cmd, fn_no, cmd_no, name)
+	GET_INSTANCE_MISC_OBJ()->plugin_new_cmd(IOPC_LIBS_PATH(libiopccmd_system.so), callback_cmd, fn_no, cmd_no, name)
 
 static void plugin_fixed_cmds()
 {
@@ -236,7 +236,7 @@ int main(int argc, char** argv)
     uint8_t *req_data_ptr;
     uint8_t *res_data_ptr;
 
-    GET_INSTANCE(ops_cfg_bdb)->init();
+    GET_INSTANCE_CFG_IFC()->init();
 
     sysinit();
     if(1) plugin_fixed_cmds();
@@ -246,7 +246,7 @@ int main(int argc, char** argv)
         memset((uint8_t*)&req, 0, sizeof(struct msg_t));
 	memset((uint8_t*)&res, 0, sizeof(struct msg_t));
 
-	GET_INSTANCE(ops_mq)->get_from(TASK_IOPCLAUNCHER, &req);
+	GET_INSTANCE_MQ_OBJ()->get_from(TASK_IOPCLAUNCHER, &req);
 	memcpy(&res.hdr, &req.hdr, sizeof(struct msg_hdr_t));
 	strcpy(res.hdr.src, req.hdr.dst);
 	strcpy(res.hdr.dst, req.hdr.src);
@@ -269,7 +269,7 @@ int main(int argc, char** argv)
 	res.hdr.fn = 0x80 | group;
 
 	if(strcmp(res.hdr.dst, "") != 0) {
-            GET_INSTANCE(ops_mq)->set_to(res.hdr.dst, &res);
+            GET_INSTANCE_MQ_OBJ()->set_to(res.hdr.dst, &res);
 	}
     }
 
