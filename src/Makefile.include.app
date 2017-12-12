@@ -1,15 +1,15 @@
 
-ifeq ($ARCH, arm)
-CROSS_COMPILE = arm-none-linux-gnueabi-
-endif
+#ifeq ($ARCH, arm)
+#CROSS_COMPILE = arm-none-linux-gnueabi-
+#endif
 
-ifeq ($ARCH, pc)
-CROSS_COMPILE = 
-endif 
+#ifeq ($ARCH, pc)
+#CROSS_COMPILE = 
+#endif 
 
 STRIP = $(CROSS_COMPILE)strip
 CC = $(CROSS_COMPILE)gcc 
-CFLAGS += -Werror -Wfatal-errors -Wunused
+CFLAGS += -Werror -Wfatal-errors -Wunused -Wl,-export-dynamic
 
 OBJS+=$(filter %.o,$(SRC:.c=.o))
 
@@ -20,9 +20,10 @@ all: $(TARGET)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 version:
-	bash gen_version.sh > version.h
+	#bash gen_version.sh > version.h
+	@echo "not supported..."
 
-$(TARGET): version $(OBJS)
+$(TARGET): $(OBJS)
 	$(CC) $(OBJS) $(LDFLAGS) -o $@
 	$(STRIP) $(TARGET)
 
