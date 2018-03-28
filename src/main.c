@@ -5,8 +5,10 @@
 
 #include "ops_db.h"
 #include "ops_mq.h"
+#include "ops_json.h"
 #include "ops_log.h"
 #include "ops_task.h"
+#include "ops_cmd.h"
 
 // ref https://github.com/troydhanson/network/blob/master/unixdomain/05.dgram/recv.c
 
@@ -55,8 +57,10 @@ int main(int argc, char** argv)
 #endif
     struct ops_db_t* db = get_db_instance();
     struct ops_mq_t* mq = get_mq_instance();
+    struct ops_json_t* json = get_json_instance();
     struct ops_log_t* log = get_log_instance();
     struct ops_task_t* task = get_task_instance();
+    struct ops_cmd_t* cmd = get_cmd_instance();
 
 #if 0
     register_signal();
@@ -64,7 +68,9 @@ int main(int argc, char** argv)
 
     db->init();
     mq->init();
+    json->init();
     log->init();
+    cmd->init();
     task->init();
 
     for(;;) {
