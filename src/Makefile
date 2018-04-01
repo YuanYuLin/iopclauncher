@@ -15,8 +15,10 @@ LDFLAGS += -L$(SDKSTAGE)/usr/lib/
 LDFLAGS += -L$(SDKSTAGE)/lib/ 
 LDFLAGS += -lc -lpthread -lrt -lz -lbz2
 #LDFLAGS += -ldb -ltokyocabinet -ltokyotyrant 
-LDFLAGS += -ljson-c -llua5.1 
-LDFLAGS += -lmicrohttpd -lgcrypt -lgnutls -lgpg-error -lp11-kit -lidn -ltasn1 -lnettle -lhogweed -lgmp
+LDFLAGS += -ljson-c 
+#LDFLAGS += -llua5.1 
+LDFLAGS += -lmicrohttpd -lgcrypt -lgnutls -lgpg-error 
+LDFLAGS += -lp11-kit -lffi -lidn -ltasn1 -lnettle -lhogweed -lgmp
 LDFLAGS += -liopcdao -liopcmisc -liopctask -liopccmd -liopcnet
 
 
