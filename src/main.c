@@ -9,6 +9,7 @@
 #include "ops_log.h"
 #include "ops_task.h"
 #include "ops_cmd.h"
+#include "ops_misc.h"
 
 // ref https://github.com/troydhanson/network/blob/master/unixdomain/05.dgram/recv.c
 
@@ -61,6 +62,7 @@ int main(int argc, char** argv)
     struct ops_log_t* log = get_log_instance();
     struct ops_task_t* task = get_task_instance();
     struct ops_cmd_t* cmd = get_cmd_instance();
+    struct ops_misc_t* misc = get_misc_instance();
 
 #if 0
     register_signal();
@@ -70,6 +72,7 @@ int main(int argc, char** argv)
     mq->init();
     json->init();
     log->init();
+    misc->init();
     cmd->init();
     task->init();
 

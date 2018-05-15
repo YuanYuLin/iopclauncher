@@ -18,6 +18,7 @@ LDFLAGS += -lc -lpthread -lrt -lz -lbz2
 LDFLAGS += -ljson-c 
 #LDFLAGS += -llua5.1 
 LDFLAGS += -lmicrohttpd -lgcrypt -lgnutls -lgpg-error 
+LDFLAGS += -llxc -lcap -lselinux -lseccomp -lapparmor -lpcre
 LDFLAGS += -lp11-kit -lffi -lidn -ltasn1 -lnettle -lhogweed -lgmp
 LDFLAGS += -liopcdao -liopcmisc -liopctask -liopccmd -liopcnet
 
