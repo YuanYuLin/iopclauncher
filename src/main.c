@@ -10,6 +10,12 @@
 #include "ops_task.h"
 #include "ops_cmd.h"
 #include "ops_misc.h"
+#ifdef SUPPORT_DRM
+#include "ops_drm.h"
+#endif
+#ifdef SUPPORT_RFB
+#include "ops_rfb.h"
+#endif
 
 // ref https://github.com/troydhanson/network/blob/master/unixdomain/05.dgram/recv.c
 
@@ -75,6 +81,14 @@ int main(int argc, char** argv)
     misc->init();
     cmd->init();
     task->init();
+#ifdef SUPPORT_DRM
+    struct ops_drm_t* drm = get_drm_instance();
+    drm->init();
+#endif
+#ifdef SUPPORT_RFB
+    struct ops_rfb_t* rfb = get_rfb_instance();
+    rfb->init();
+#endif
 
     for(;;) {
 #if 0
