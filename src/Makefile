@@ -34,9 +34,9 @@ CFLAGS += -DSUPPORT_DRM
 LDFLAGS += -ldrm -liopcdrm 
 endif
 ifeq ($(SUPPORT_RFB), y)
-CFLAGS += -I$(SDKSTAGE)/usr/include/libiopcrfb
-CFLAGS += -DSUPPORT_RFB
-LDFLAGS += -liopcrfb
+#CFLAGS += -I$(SDKSTAGE)/usr/include/libiopcrfb
+#CFLAGS += -DSUPPORT_RFB
+#LDFLAGS += -liopcrfb
 endif
 
 SRC = 
