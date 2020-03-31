@@ -5,12 +5,14 @@
 
 #include "ops_db.h"
 #include "ops_mq.h"
+#include "ops_net.h"
 #include "ops_json.h"
 #include "ops_log.h"
 #include "ops_task.h"
+#include "ops_shell.h"
 #include "ops_cmd.h"
 #include "ops_misc.h"
-#ifdef SUPPORT_DRM
+#ifdef SUPPORT_IOPCDRM
 #include "ops_drm.h"
 #endif
 #ifdef SUPPORT_RFB
@@ -64,24 +66,28 @@ int main(int argc, char** argv)
 #endif
     struct ops_db_t* db = get_db_instance();
     struct ops_mq_t* mq = get_mq_instance();
+    struct ops_net_t* net = get_net_instance();
     struct ops_json_t* json = get_json_instance();
     struct ops_log_t* log = get_log_instance();
     struct ops_task_t* task = get_task_instance();
     struct ops_cmd_t* cmd = get_cmd_instance();
     struct ops_misc_t* misc = get_misc_instance();
+    struct ops_shell_t* shell = get_shell_instance();
 
 #if 0
     register_signal();
 #endif
 
+    log->init();
     db->init();
     mq->init();
+    net->init();
     json->init();
-    log->init();
     misc->init();
+    shell->init();
     cmd->init();
     task->init();
-#ifdef SUPPORT_DRM
+#ifdef SUPPORT_IOPCDRM
     struct ops_drm_t* drm = get_drm_instance();
     drm->init();
 #endif

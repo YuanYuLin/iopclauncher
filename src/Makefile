@@ -23,10 +23,10 @@ LDFLAGS += -liopcdao -liopcmisc -liopctask -liopccmd -liopcnet
 ifeq ($(SUPPORT_LXC), y)
 CFLAGS += -I$(SDKSTAGE)/usr/include/lxc
 CFLAGS += -DSUPPORT_LXC
-LDFLAGS += -llxc -lselinux -lseccomp -lcap -lapparmor
+LDFLAGS += -llxc -lselinux -lseccomp -lcap -lattr -lapparmor
 LDFLAGS += -lnettle -lhogweed -lgmp -lidn -ltasn1 -lp11-kit -lffi -lpcre -lgnutls
 endif
-ifeq ($(SUPPORT_DRM), y)
+ifeq ($(SUPPORT_IOPCDRM), y)
 CFLAGS += -I$(SDKSTAGE)/usr/include/libdrm
 CFLAGS += -I$(SDKSTAGE)/usr/include/libdrm/libdrm
 CFLAGS += -I$(SDKSTAGE)/usr/include/libiopcdrm
